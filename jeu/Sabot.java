@@ -1,15 +1,15 @@
 package jeu;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import cartes.Carte;
 
-public class Sabot implements Iterator<Carte>{
+public class Sabot implements Iterable<Carte>{
 	private int nbCartes;
 	private Carte[] cartes;
-	private int indiceIterator = 0;
-	private boolean nextEffectue = false;
+	private int nombreOperations = 0;
 
 	public Sabot(Carte[] cartes) {
 		this.cartes = cartes;
@@ -26,52 +26,71 @@ public class Sabot implements Iterator<Carte>{
 		}else {
 			cartes[nbCartes] = carte;
 			nbCartes++;
+			nombreOperations++;
+			
 		}
 	}
 
-	@Override
-	public boolean hasNext() {
-		return indiceIterator < nbCartes;
-	}
+	
+	public Iterator<Carte> iterator() { return new Iterateur(); }
+	
+	private class Iterateur implements Iterator<Carte> {
+		private int indiceIterator = 0;
+		private boolean nextEffectue = false;
+		private int nombreOperationsReference = nombreOperations;
+	
+		@Override
+		public boolean hasNext() {
+			return indiceIterator < nbCartes;
+		}
 
-	@Override
-	public Carte next() {
-		if (hasNext()) {
-			Carte carte = cartes[indiceIterator];
-			indiceIterator++;
-			nextEffectue = true;
-			return carte;
-		}else {
-			throw new NoSuchElementException();
+		@Override
+		public Carte next() {
+			verificationConcurrence();
+			if (hasNext()) {
+				Carte carte = cartes[indiceIterator];
+				indiceIterator++;
+				nextEffectue = true;
+				return carte;
+			}else {
+				throw new NoSuchElementException();
+			}
+		}
+		
+		@Override
+		public void remove() {
+			verificationConcurrence();
+			if (nbCartes < 1 || !nextEffectue) {
+				throw new IllegalStateException();
+			}
+			for (int i = indiceIterator - 1; i < nbCartes - 1; i++) {
+				cartes[i] = cartes[i + 1];
+			}
+			nextEffectue = false;
+			indiceIterator--; // indice du prochain élément à visiter (s’il existe)			
+			nbCartes--;
+			nombreOperations++; nombreOperationsReference++;	
+		}
+		private void verificationConcurrence(){
+			if (nombreOperations != nombreOperationsReference)
+				throw new ConcurrentModificationException();
 		}
 	}
 	
-	@Override
-	public void remove() {
-		if (nbCartes < 1 || !nextEffectue) {
-			throw new IllegalStateException();
-		}
-		for (int i = indiceIterator - 1; i < nbCartes - 1; i++) {
-			cartes[i] = cartes[i + 1];
-		}
-		nextEffectue = false;
-		indiceIterator--; // indice du prochain élément à visiter (s’il existe)			
-		nbCartes--;
-		
-	}
 	
 	public Carte piocher() {
+		Iterator<Carte> iter = iterator();
 		try {
-			Carte cartePiocher = next();
-			remove();
+			Carte cartePiocher = iter.next();
+			iter.remove();
 			return cartePiocher;
-			
-		} catch  (NoSuchElementException e) {
+
+		} catch (NoSuchElementException e) {
 			System.out.println("La pioche est Vide");
-			//e.getMessage();
+			// e.getMessage();
 			return null;
 		}
-		
+
 	}
 	
 	

@@ -1,5 +1,7 @@
 package testsFonctionnels;
 
+import java.util.Iterator;
+
 import cartes.Carte;
 import cartes.JeuDeCartes;
 import jeu.Sabot;
@@ -17,10 +19,11 @@ public class TestSabot {
 		System.out.println("Boucle b) \n");
 		Carte[] cartes2 = jeu.donnerCartes();
 		Sabot sabot2 = new Sabot(cartes2);
+		Iterator<Carte> iter = sabot2.iterator();
 		
-		while(sabot2.hasNext()) {
-			System.out.println(" je pioche "+ sabot2.next().toString());
-			sabot2.remove();
+		while(iter.hasNext()) {
+			System.out.println(" je pioche "+ iter.next().toString());
+				iter.remove();
 		}
 		
 		

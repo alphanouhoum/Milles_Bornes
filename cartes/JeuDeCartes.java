@@ -1,5 +1,7 @@
 package cartes;
 
+import java.util.Iterator;
+
 public class JeuDeCartes {
 	private Configuration[] typesDeCartes = {
 			new Configuration(new Borne(25), 10),
@@ -92,7 +94,18 @@ public class JeuDeCartes {
 		}
 		
 		return cartes;
+	}
+	
+	public boolean checkCount() {
+		Carte cartes[] = donnerCartes();
 		
+		int nombreTotalCarte = 0;
+		for (Configuration configuration : typesDeCartes) {
+			if (configuration != null) {
+				nombreTotalCarte += configuration.getNbExemplaires();
+			}
+		}
+		return cartes.length == nombreTotalCarte;
 	}
 	
 	
