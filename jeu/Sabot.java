@@ -87,7 +87,6 @@ public class Sabot implements Iterable<Carte>{
 
 		} catch (NoSuchElementException e) {
 			System.out.println("La pioche est Vide");
-			// e.getMessage();
 			return null;
 		}
 
