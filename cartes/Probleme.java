@@ -11,12 +11,13 @@ public class Probleme extends Carte {
 		return type;
 	}
 	
+	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Attaque attaque) {
-			return type == attaque.getType();
-		}
-		
-		return false;
+	    if (this == obj) return true;
+	    
+	    if (obj == null || getClass() != obj.getClass()) return false;
+	    Probleme probleme = (Probleme) obj;
+	    return type == probleme.type;
 	}
 }

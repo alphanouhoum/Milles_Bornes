@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.ListIterator;
 import java.util.Random;
 
 public class GestionCartes {
+	
 	public static <T> T extraireV1 (List<T> liste){
 		Random random = new Random();
 		int indice = random.nextInt(liste.size());
@@ -42,7 +42,7 @@ public class GestionCartes {
 	public static <T> boolean verifierMelange (List<T> liste1, List<T> liste2){
 		for(Iterator<T> iter = liste1.iterator(); iter.hasNext();) {
 			T element = iter.next();
-			if (Collections.frequency(liste2, element) != (Collections.frequency(liste1, element)){
+			if (Collections.frequency(liste2, element) != (Collections.frequency(liste1, element))){
 				return false;
 			}
 		}
@@ -54,6 +54,7 @@ public class GestionCartes {
 		List<T> elementConnu = new ArrayList<>();
 		
 		for(Iterator<T> iter = liste.iterator(); iter.hasNext();) {
+			//System.out.println(elementConnu);
 			T element = iter.next();
 			if (!elementConnu.contains(element)) {
 				elementConnu.add(element);
@@ -68,4 +69,33 @@ public class GestionCartes {
 		return res;
 		
 	}
+	
+	public static <T> boolean verifierRassemblement(List<T> liste) {
+		
+		for(ListIterator<T> iter1 = liste.listIterator(); iter1.hasNext();) {
+			T element1 = iter1.next();
+			T element2 = iter1.next();
+			
+			if(!element1.equals(element2)) {
+				for(ListIterator<T> iter2 = liste.listIterator(iter1.previousIndex()); iter2.hasNext();) {
+					T element = iter2.next();
+					if(element.equals(element1)) {
+						return false;
+					}
+				}
+			}
+			
+			
+		}
+		return true;
+	}
+	
 }
+
+
+
+
+
+
+
+
